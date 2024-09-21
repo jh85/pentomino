@@ -2,10 +2,11 @@ pub mod piece {
     use crate::board::board::*;
 
     pub fn get_num_pieces(n: usize) -> usize {
-        if n == 5 {
-            NUM_PIECES_5
-        } else {
-            NUM_PIECES_6
+        match n {
+            4 => NUM_PIECES_4,
+            5 => NUM_PIECES_5,
+            6 => NUM_PIECES_6,
+            _ => panic!("wrong size"),
         }
     }
     
@@ -20,10 +21,11 @@ pub mod piece {
     }
 
     pub fn congruent_figures_for_each_piece(n: usize) -> Vec<Vec<Vec<(usize,usize)>>> {
-        let all_pieces = if n == 5 {
-            pieces2vec(PIECES_5)
-        } else {
-            pieces2vec(PIECES_6)
+        let all_pieces = match n {
+            4 => pieces2vec(PIECES_4),
+            5 => pieces2vec(PIECES_5),
+            6 => pieces2vec(PIECES_6),
+            _ => panic!("wrong n"),
         };
     
         let mut ret = Vec::new();
@@ -46,6 +48,33 @@ pub mod piece {
         }
         ret
     }
+
+    #[allow(dead_code)]
+    pub const NUM_PIECES_4: usize = 5;
+
+    #[allow(dead_code)]
+    pub const PIECES_4: [[[usize;4];4]; NUM_PIECES_4] = [
+        [[1,0,0,0],
+         [1,0,0,0],
+         [1,0,0,0],
+         [1,0,0,0]], // 0
+        [[1,1,1,0],
+         [0,1,0,0],
+         [0,0,0,0],
+         [0,0,0,0]], // 1
+        [[1,1,1,0],
+         [1,0,0,0],
+         [0,0,0,0],
+         [0,0,0,0]], // 2
+        [[0,1,1,0],
+         [1,1,0,0],
+         [0,0,0,0],
+         [0,0,0,0]], // 3
+        [[1,1,0,0],
+         [1,1,0,0],
+         [0,0,0,0],
+         [0,0,0,0]], // 4
+    ];
 
     #[allow(dead_code)]
     pub const NUM_PIECES_5: usize = 12;

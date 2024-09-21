@@ -94,7 +94,7 @@ fn solve_polyomino_dlx(board: &Vec<Vec<usize>>, n: usize) -> Vec<Board> {
     }
 
     let mut solutions = SolutionSet::new();
-    let num_solutions: usize = if n == 5 { 0 } else { 1 };
+    let num_solutions: usize = if n == 6 { 1 } else { 0 };
     for solution in solve(m, num_solutions).iter() {
         let solved_board = solution2board(&solution, &kinds, &positions, &board);
         solutions.add_solution(solved_board);
@@ -103,6 +103,65 @@ fn solve_polyomino_dlx(board: &Vec<Vec<usize>>, n: usize) -> Vec<Board> {
 }
     
 fn main() {
+    // 7x3 - 1
+    let board_401 = vec![
+        vec![0,0,0,0,0,0,0],
+        vec![0,0,1,0,0,0,0],
+        vec![0,0,0,0,0,0,0],
+    ];
+    let solsz_401: usize = 4;
+
+    // 7x3 - 1
+    let board_402 = vec![
+        vec![0,0,0,0,0,1,0],
+        vec![0,0,0,0,0,0,0],
+        vec![0,0,0,0,0,0,0],
+    ];
+    let solsz_402: usize = 3;
+
+    // 7x3 - 1
+    let board_403 = vec![
+        vec![0,0,0,0,0,0,0],
+        vec![1,0,0,0,0,0,0],
+        vec![0,0,0,0,0,0,0],
+    ];
+    let solsz_403: usize = 4;
+
+    // 7x3 - 1
+    let board_404 = vec![
+        vec![0,0,0,1,0,0,0],
+        vec![0,0,0,0,0,0,0],
+        vec![0,0,0,0,0,0,0],
+    ];
+    let solsz_404: usize = 2;
+
+    // 9x3 - 7
+    let board_405 = vec![
+        vec![1,1,0,0,0,0,0,0,1],
+        vec![0,0,0,0,0,0,0,0,0],
+        vec![1,1,0,0,1,0,0,0,1],
+    ];
+    let solsz_405: usize = 1;
+    
+    let problems = vec![board_401,board_402,board_403,board_404,board_405];
+    let solsizes = vec![solsz_401,solsz_402,solsz_403,solsz_404,solsz_405];
+
+    for i in 0..problems.len() {
+        let start = Instant::now();
+        let solutions = solve_polyomino_dlx(&problems[i], 4);
+        let duration = start.elapsed();
+        solutions[0].pprint();
+        println!("DancingLinks: solution={} correct={} time={:?}", solutions.len(), solsizes[i], duration);
+    }
+
+    for i in 0..problems.len() {
+        let start = Instant::now();
+        let solutions = solve_polyomino_bt(&problems[i], 4);
+        let duration = start.elapsed();
+        solutions[0].pprint();
+        println!("Backtracking: solution={} correct={} time={:?}", solutions.len(), solsizes[i], duration);
+    }
+    
     // 8x8 - 4(center)
     let board_501 = vec![
         vec![0,0,0,0,0,0,0,0],
