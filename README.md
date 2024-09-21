@@ -1,1 +1,5 @@
-# pentomino
+# Polyomino
+
+Backtracking
+
+Dancing Links
