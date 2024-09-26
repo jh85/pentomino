@@ -1,9 +1,12 @@
 # Polyomino Puzzle
 
+For Pentomino, the code outputs the total number of solutions for the given board. However, for Hexomino and the larger polyominoes, since it is impossible to count all the solutions, the code stops and outputs as soon as it finds the first solution.
+
+
 **Backtracking**: According to [WikiPedia's Backtracking page](https://en.wikipedia.org/wiki/Backtracking) 
 > Backtracking is a class of algorithms for finding solutions to some computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons a candidate ("backtracks") as soon as it determines that the candidate cannot possibly be completed to a valid solution.
 
-I used [Ethnum](https://crates.io/crates/ethnum)'s U256 for the bitmap, so the current backtracking code does not work on large boards with more than 256 cells.
+I used [Ethnum](https://crates.io/crates/ethnum)'s U256 for the bitmap, so the current backtracking code does not work on large boards with more than 256 cells. If you use u64 for the bitmap, the current code runs a little faster.
 
 **Dancing Links**: To solve polyomino puzzles as exact cover problems, [Knuth's Algorithm X](https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X) is used. According to [Dancing Links](https://doi.org/10.48550/arXiv.cs/0011047), 
 > My purpose is to discuss an extremely simple technique that deserves to be better known. Suppose x points to an element of a doubly linked list; let L[x] and R[x] point to the predecessor and successor of that element. Then the operations
