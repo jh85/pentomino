@@ -17,7 +17,7 @@
 To implement this efficiently in Rust, I used the great implementation of [Dancing Links In Rust](https://ferrous-systems.com/blog/dlx-in-rust/)
 
 
-**Redelmeier's algorithm**: To generate polyomino pieces automatically for a given size n, Redelmeier's algorithm is used. It is described in [Counting polyominoes: Yet another attack](https://doi.org/10.1016/0012-365X(81)90237-5). Only free polyominoes are used. Free polyominoes are distinct if no rigid transformation (such as moving, rotating, or flipping) can make one match the other. A rigid transformation keeps the shape and size of an object the same. Non-rigid transformations, like scaling, shearing, or stretching, change the size or proportions of the shape.
+**Redelmeier's algorithm**: To generate polyomino pieces automatically for a given size n, Redelmeier's algorithm is used. It is described in [Counting polyominoes: Yet another attack](https://doi.org/10.1016/0012-365X(81)90237-5). Only free polyominoes are listed. Free polyominoes are distinct if no rigid transformation (such as moving, rotating, or flipping) can make one match the other. A rigid transformation keeps the shape and size of an object the same. Non-rigid transformations, like scaling, shearing, or stretching, change the size or proportions of the shape.
 
 
 
