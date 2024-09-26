@@ -112,7 +112,7 @@ pub mod backtracking {
     }
 
     pub fn solve_polyomino_bt(board: &Vec<Vec<usize>>, n: usize) -> Vec<Board> {
-        let num_solutions: usize = if n == 6 { 1 } else { 0 };
+        let num_solutions: usize = if n >= 6 { 1 } else { 0 };
         let solver = Solver::new(board.len(), board[0].len(), n, num_solutions);
         let solutions = solver.solve(board2bitmap(&board));
         solutions

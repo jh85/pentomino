@@ -1,15 +1,18 @@
 pub mod piece {
     use crate::board::board::*;
-
+    use crate::polyominolist::polyominolist::*;
+    
     pub fn get_num_pieces(n: usize) -> usize {
         match n {
             4 => NUM_PIECES_4,
             5 => NUM_PIECES_5,
             6 => NUM_PIECES_6,
+            7 => NUM_PIECES_7,
             _ => panic!("wrong size"),
         }
     }
-    
+
+    #[allow(dead_code)]
     fn pieces2vec<const N: usize, const K: usize>(pieces: [[[usize;N];N];K]) -> Vec<Vec<Vec<usize>>> {
         pieces.iter()
             .map(|mat| {
@@ -21,13 +24,15 @@ pub mod piece {
     }
 
     pub fn congruent_figures_for_each_piece(n: usize) -> Vec<Vec<Vec<(usize,usize)>>> {
-        let all_pieces = match n {
-            4 => pieces2vec(PIECES_4),
-            5 => pieces2vec(PIECES_5),
-            6 => pieces2vec(PIECES_6),
-            _ => panic!("wrong n"),
-        };
-    
+//        let all_pieces = match n {
+//            4 => pieces2vec(PIECES_4),
+//            5 => pieces2vec(PIECES_5),
+//            6 => pieces2vec(PIECES_6),
+//            _ => panic!("wrong n"),
+//        };
+
+        let all_pieces = free_polyominos(n);
+        
         let mut ret = Vec::new();
         for piece in all_pieces {
             let mut congruent_figures = Vec::new();
@@ -50,10 +55,10 @@ pub mod piece {
     }
 
     #[allow(dead_code)]
-    pub const NUM_PIECES_4: usize = 5;
+    const NUM_PIECES_4: usize = 5;
 
     #[allow(dead_code)]
-    pub const PIECES_4: [[[usize;4];4]; NUM_PIECES_4] = [
+    const PIECES_4: [[[usize;4];4]; NUM_PIECES_4] = [
         [[1,0,0,0],
          [1,0,0,0],
          [1,0,0,0],
@@ -77,10 +82,10 @@ pub mod piece {
     ];
 
     #[allow(dead_code)]
-    pub const NUM_PIECES_5: usize = 12;
+    const NUM_PIECES_5: usize = 12;
 
     #[allow(dead_code)]
-    pub const PIECES_5: [[[usize;5];5]; NUM_PIECES_5] = [
+    const PIECES_5: [[[usize;5];5]; NUM_PIECES_5] = [
         [[1,0,0,0,0],
          [1,0,0,0,0],
          [1,0,0,0,0],
@@ -144,10 +149,10 @@ pub mod piece {
     ];
 
     #[allow(dead_code)]
-    pub const NUM_PIECES_6: usize = 35;
+    const NUM_PIECES_6: usize = 35;
 
     #[allow(dead_code)]
-    pub const PIECES_6: [[[usize;6];6]; NUM_PIECES_6] = [
+    const PIECES_6: [[[usize;6];6]; NUM_PIECES_6] = [
         [[1,0,0,0,0,0],
          [1,0,0,0,0,0],
          [1,0,0,0,0,0],
@@ -359,5 +364,8 @@ pub mod piece {
          [0,0,0,0,0,0],
          [0,0,0,0,0,0]], // 34
     ];
+
+    #[allow(dead_code)]
+    const NUM_PIECES_7: usize = 108;
 }
 

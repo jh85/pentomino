@@ -3,6 +3,7 @@ mod dancinglinks;
 mod board;
 mod backtracking;
 mod solutionset;
+mod polyominolist;
 
 use std::time::Instant;
 use pieces::piece::*;
@@ -94,7 +95,7 @@ fn solve_polyomino_dlx(board: &Vec<Vec<usize>>, n: usize) -> Vec<Board> {
     }
 
     let mut solutions = SolutionSet::new();
-    let num_solutions: usize = if n == 6 { 1 } else { 0 };
+    let num_solutions: usize = if n >= 6 { 1 } else { 0 };
     for solution in solve(m, num_solutions).iter() {
         let solved_board = solution2board(&solution, &kinds, &positions, &board);
         solutions.add_solution(solved_board);
@@ -150,7 +151,7 @@ fn main() {
         let start = Instant::now();
         let solutions = solve_polyomino_dlx(&problems[i], 4);
         let duration = start.elapsed();
-        solutions[0].pprint();
+//        solutions[0].pprint();
         println!("DancingLinks: solution={} correct={} time={:?}", solutions.len(), solsizes[i], duration);
     }
 
@@ -158,7 +159,7 @@ fn main() {
         let start = Instant::now();
         let solutions = solve_polyomino_bt(&problems[i], 4);
         let duration = start.elapsed();
-        solutions[0].pprint();
+//        solutions[0].pprint();
         println!("Backtracking: solution={} correct={} time={:?}", solutions.len(), solsizes[i], duration);
     }
     
@@ -254,7 +255,7 @@ fn main() {
         let start = Instant::now();
         let solutions = solve_polyomino_dlx(&problems[i], 5);
         let duration = start.elapsed();
-        solutions[0].pprint();        
+//        solutions[0].pprint();        
         println!("DancingLinks: solution={} correct={} time={:?}", solutions.len(), solsizes[i], duration);
     }
 
@@ -262,7 +263,7 @@ fn main() {
         let start = Instant::now();
         let solutions = solve_polyomino_bt(&problems[i], 5);
         let duration = start.elapsed();
-        solutions[0].pprint();
+//        solutions[0].pprint();
         println!("Backtracking: solution={} correct={} time={:?}", solutions.len(), solsizes[i], duration);
     }
 
@@ -344,7 +345,8 @@ fn main() {
         vec![0,0,1,0,0],
         vec![0,0,0,0,0],
     ];
-    
+
+    #[allow(unused_variables)]
     let board_604 = vec![
         vec![0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         vec![0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -445,22 +447,66 @@ fn main() {
     ];
 
     // board_602 and board_604 take too long
-    let problems = vec![&board_601,&board_603,&board_605,&board_606,&board_607,&board_608];
-    for i in 0..problems.len() {
-        let start = Instant::now();
-        let solutions = solve_polyomino_bt(&problems[i], 6);
-        let duration = start.elapsed();
-        solutions[0].pprint();
-        println!("Backtracking: solution={} time={:?}", solutions.len(), duration);
-    }
+//    let problems = vec![&board_601,&board_603,&board_605,&board_606,&board_607,&board_608];
+//    for i in 0..problems.len() {
+//        let start = Instant::now();
+//        let solutions = solve_polyomino_bt(&problems[i], 6);
+//        let duration = start.elapsed();
+//        solutions[0].pprint();
+//        println!("Backtracking: solution={} time={:?}", solutions.len(), duration);
+//    }
     
-    let problems = vec![&board_602,&board_603,&board_605,&board_606,&board_607,&board_608];
-    for i in 0..problems.len() {
-        let start = Instant::now();
-        let solutions = solve_polyomino_dlx(&problems[i], 6);
-        let duration = start.elapsed();
-        solutions[0].pprint();
-        println!("DancingLinks: solution={} time={:?}", solutions.len(), duration);
-    }
+//    let problems = vec![&board_602,&board_603,&board_605,&board_606,&board_607,&board_608];
+//    for i in 0..problems.len() {
+//        let start = Instant::now();
+//        let solutions = solve_polyomino_dlx(&problems[i], 6);
+//        let duration = start.elapsed();
+//        solutions[0].pprint();
+//        println!("DancingLinks: solution={} time={:?}", solutions.len(), duration);
+//    }
 
+    let board_701 = vec![
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,1,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,1,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,1,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+        vec![0,0,0,0,0, 0,0,0,0,0, 0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+    ];
+
+    let start = Instant::now();
+    let solutions = solve_polyomino_dlx(&board_701, 7);
+    let duration = start.elapsed();
+    println!("DancingLinks: solution={} time={:?}", solutions.len(), duration);    
 }
