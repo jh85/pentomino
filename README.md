@@ -14,7 +14,7 @@
 > 
 > will put x back into the list again. ...The idea of (2) was introduced in 1979 by Hitotumatu and Noshita, who showed that it makes Dijkstra’s well-known program for the N queens problem run nearly twice as fast without making the program significantly more complicated.
 
-To implement this efficiently in Rust, I used the great implementation of [Dancing Links In Rust](https://ferrous-systems.com/blog/dlx-in-rust/)
+To implement this efficiently in Rust, I used the great implementation of [Dancing Links In Rust](https://ferrous-systems.com/blog/dlx-in-rust/). They use indices instead of references to implement Dancing Links, which is super cool.
 
 
 **Redelmeier's algorithm**: To generate polyomino pieces automatically for a given size n, Redelmeier's algorithm is used. It is described in [Counting polyominoes: Yet another attack](https://doi.org/10.1016/0012-365X(81)90237-5). Only free polyominoes are listed. Free polyominoes are distinct if no rigid transformation (such as moving, rotating, or flipping) can make one match the other. A rigid transformation keeps the shape and size of an object the same. Non-rigid transformations, like scaling, shearing, or stretching, change the size or proportions of the shape.
