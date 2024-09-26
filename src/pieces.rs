@@ -8,6 +8,9 @@ pub mod piece {
             5 => NUM_PIECES_5,
             6 => NUM_PIECES_6,
             7 => NUM_PIECES_7,
+            8 => NUM_PIECES_8,
+            9 => NUM_PIECES_9,
+            10 => NUM_PIECES_10,
             _ => panic!("wrong size"),
         }
     }
@@ -367,5 +370,11 @@ pub mod piece {
 
     #[allow(dead_code)]
     const NUM_PIECES_7: usize = 108;
+    #[allow(dead_code)]
+    const NUM_PIECES_8: usize = 369;
+    #[allow(dead_code)]
+    const NUM_PIECES_9: usize = 1285;
+    #[allow(dead_code)]
+    const NUM_PIECES_10: usize = 4655;
 }
 
