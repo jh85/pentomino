@@ -1,7 +1,6 @@
 # Polyomino Puzzle
 
-For Pentomino, the code outputs the total number of solutions for the given board. However, for Hexomino and the larger polyominoes, since it is impossible to count all the solutions, the code stops and outputs as soon as it finds the first solution.
-
+For Pentomino, the code outputs the total number of solutions for the given board. For Hexomino and the larger polyominoes, the code stops and outputs as soon as it finds the first solution, since it is impossible to count all the solutions, 
 
 **Backtracking**: According to [WikiPedia's Backtracking page](https://en.wikipedia.org/wiki/Backtracking) 
 > Backtracking is a class of algorithms for finding solutions to some computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons a candidate ("backtracks") as soon as it determines that the candidate cannot possibly be completed to a valid solution.
