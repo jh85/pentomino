@@ -1,6 +1,11 @@
 # Polyomino Puzzle
 
-For Pentomino, the code outputs the total number of solutions for the given board. For Hexomino and the larger polyominoes, the code stops and outputs as soon as it finds the first solution, since it is impossible to count all the solutions, 
+A polyomino puzzle solver was implemented. It runs fast for puzzles up to Pentominoes. While it is slow, it can still handle Hexominoes. However, for Heptominoes and larger, it is too slow to be practical. For Pentomino puzzles, the code outputs the total number of solutions for a given board. For Hexominoes and larger polyominoes, the solver stops and outputs as soon as it finds the first solution, as counting all solutions is impractical.
+
+**How to use**: 
+1. In the main() function, create a board object as a Vec<Vec\<usize\>>. Use 1 to mark holes (places where pieces cannot be placed) and 0 for open spaces.
+2. To use the Dancing Links solver, call solve_polyomino_dlx(board, size). For the Backtracking solver, call solve_polyomino_bt(board, size).
+3. Both solve_polyomino_XXX functions return a Vec<Vec<Vec\<usize\>>>, which is a vector of boards. Each board represents a solution.
 
 **Backtracking**: According to [WikiPedia's Backtracking page](https://en.wikipedia.org/wiki/Backtracking) 
 > Backtracking is a class of algorithms for finding solutions to some computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons a candidate ("backtracks") as soon as it determines that the candidate cannot possibly be completed to a valid solution.
