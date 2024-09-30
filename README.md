@@ -27,14 +27,15 @@ To implement this efficiently in Rust, I used the great implementation of [Danci
 
 **Redelmeier's algorithm**: To generate polyomino pieces automatically for a given size n, Redelmeier's algorithm is used. It is described in [Counting polyominoes: Yet another attack](https://doi.org/10.1016/0012-365X(81)90237-5). My current implementation lists free polyominoes only. Free polyominoes are distinct if no rigid transformation (such as moving, rotating, or flipping) can make one match the other. A rigid transformation keeps the shape and size of an object the same. Non-rigid transformations, like scaling, shearing, or stretching, change the size or proportions of the shape.
 
-**Performance**: I ran tests using boards with n = 4 to 7 (each having exactly one solution) in the Dancing Links code and measured how long it took to find the solution. The results were as follows:
+**Performance**: I ran tests using boards with n = 5 to 9 (each having exactly one solution) in the Dancing Links code and measured how long it took to find the solution. The results were as follows:
 
 | name      | # of pieces | time(sec) |
 |-----------|-------------|-----------|
-| tetromino | 5           | 0.0056    |
-| pentomino | 12          | 0.4239    |
-| hexomino  | 35          | 33.711    |
-| heptomino | 108         | 2828.89   |
+| pentomino | 12          | 0.0056    |
+| hexomino  | 35          | 0.4239    |
+| heptomino | 108         | 33.711    |
+| octomino  | 369         | 2828.89   |
+| nonomino  | 1285        | 216696.97 |
 
 If the goal is to find just a few solutions in a large board, backtracking with proper pruning might be faster than Dancing Links.
 
