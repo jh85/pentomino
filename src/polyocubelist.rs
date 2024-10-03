@@ -27,10 +27,11 @@ pub mod polyocubelist {
            required_cells: u32,
            mut next_number: u32,
            numbered: &mut Vec<Vec<Vec<Option<u32>>>>,
+           numbered_q: &mut Vec<[usize;3]>,
            mut max_visited: u32,
-           visited: &mut Vec<Vec<Vec<u32>>>,
+           visited: &mut Vec<Vec<Vec<bool>>>,
            border: &mut HashSet<[usize; 3]>,
-           solutions: &mut Vec<Vec<Vec<Vec<u32>>>>) {
+           solutions: &mut Vec<Vec<Vec<Vec<bool>>>>) {
         let n = visited.len();
         let dim: [usize; 3] = [n, 2*n-1, 2*n-1];
 
@@ -68,51 +69,57 @@ pub mod polyocubelist {
                 continue;
             }
 
-            let value_numbered = get_value_3d!(numbered, &new_loc);
-            if value_numbered.is_none() {
+            if get_value_3d!(numbered, &new_loc).is_none() {
                 set_value_3d!(numbered, &new_loc, Some(next_number));
                 next_number += 1;
                 border.insert(new_loc);
+                numbered_q.push(new_loc);
             }
         }
 
         let border_list: Vec<_> = border.clone().into_iter().collect();
         for new_loc in border_list {
-            let value_numbered = get_value_3d!(numbered, &new_loc);
-            if let Some(v) = value_numbered {
+            if let Some(v) = get_value_3d!(numbered, &new_loc) {
                 if v > max_visited {
-                    set_value_3d!(visited, &new_loc, 1);
-
+                    set_value_3d!(visited, &new_loc, true);
                     let pre_max_visited = max_visited;
                     max_visited = v;
                     border.remove(&new_loc);
 
+                    let mut numbered_q2: Vec<[usize;3]> = Vec::new();
                     dfs(&new_loc,
                         required_cells - 1,
                         next_number,
-                        &mut numbered.clone(),
+                        numbered,
+                        &mut numbered_q2,
                         max_visited,
-                        &mut visited.clone(),
-                        &mut border.clone(),
+                        visited,
+                        border,
                         solutions);
+
+                    while numbered_q2.len() > 0 {
+                        let numbered_loc = numbered_q2.pop().unwrap();
+                        set_value_3d!(numbered, &numbered_loc, None);
+                    }
 
                     border.insert(new_loc);
                     max_visited = pre_max_visited;
 
-                    set_value_3d!(visited, &new_loc, 0);
+                    set_value_3d!(visited, &new_loc, false);
                 }
             }
         }
     }
 
-    fn list_3d_ominoes(n: usize) -> Vec<Vec<Vec<Vec<u32>>>> {
+    fn generate_polyocube_candidates(n: usize) -> Vec<Vec<Vec<Vec<bool>>>> {
         let size = 2 * n - 1;
-        let mut visited = vec![vec![vec![0; size]; size]; n];
+        let mut visited = vec![vec![vec![false; size]; size]; n];
         let mut numbered = vec![vec![vec![None; size]; size]; n];
-        let border: HashSet<[usize; 3]> = HashSet::new();
+        let mut numbered_q: Vec<[usize;3]> = Vec::new();
+        let mut border: HashSet<[usize; 3]> = HashSet::new();
 
         let start_loc: [usize; 3] = [0, n - 1, n - 1];
-        set_value_3d!(visited, &start_loc, 1);
+        set_value_3d!(visited, &start_loc, true);
         set_value_3d!(numbered, &start_loc, Some(0));
 
         let max_visited = 0;
@@ -123,16 +130,17 @@ pub mod polyocubelist {
         dfs(&start_loc,
             required_cells as u32,
             next_number,
-            &mut numbered.clone(),
+            &mut numbered,
+            &mut numbered_q,
             max_visited,
-            &mut visited.clone(),
-            &mut border.clone(),
+            &mut visited,
+            &mut border,
             &mut solutions);
 
         solutions
     }
 
-    fn normalize(omino: &Vec<Vec<Vec<u32>>>, n: usize) -> Vec<Vec<Vec<u32>>> {
+    fn normalize(omino: &Vec<Vec<Vec<bool>>>, n: usize) -> Vec<Vec<Vec<bool>>> {
         let dim0 = omino.len();
         let dim1 = omino[0].len();
         let dim2 = omino[0][0].len();
@@ -146,7 +154,7 @@ pub mod polyocubelist {
         for i in 0..dim0 {
             for j in 0..dim1 {
                 for k in 0..dim2 {
-                    if omino[i][j][k] > 0 {
+                    if omino[i][j][k] {
                         min_i = min_i.min(i);
                         max_i = max_i.max(i);
                         min_j = min_j.min(j);
@@ -157,7 +165,7 @@ pub mod polyocubelist {
                 }
             }
         }
-        let mut omino2 = vec![vec![vec![0; n]; n]; n];
+        let mut omino2 = vec![vec![vec![false; n]; n]; n];
         for i in 0..(max_i - min_i + 1) {
             for j in 0..(max_j - min_j + 1) {
                 for k in 0..(max_k - min_k + 1) {
@@ -168,9 +176,9 @@ pub mod polyocubelist {
         omino2
     }
 
-    fn rotate_k(cube: &Vec<Vec<Vec<u32>>>, k: usize) -> Vec<Vec<Vec<u32>>> {
+    fn rotate_k(cube: &Vec<Vec<Vec<bool>>>, k: usize) -> Vec<Vec<Vec<bool>>> {
         let n = cube.len();
-        let mut rotated = vec![vec![vec![0; n]; n]; n];
+        let mut rotated = vec![vec![vec![false; n]; n]; n];
         for x in 0..n {
             for y in 0..n {
                 for z in 0..n {
@@ -207,32 +215,68 @@ pub mod polyocubelist {
         rotated
     }
 
-    fn congruent_forms(omino: &Vec<Vec<Vec<u32>>>) -> Vec<Vec<Vec<Vec<u32>>>> {
-        let mut cforms = Vec::new();
+    fn generate_congruent_shapes(omino: &Vec<Vec<Vec<bool>>>) -> Vec<Vec<Vec<Vec<bool>>>> {
+        let mut congruent_shapes = Vec::new();
         let n = omino.len();
         for k in 0..24 {
             let o = rotate_k(omino, k);
             let o_norm = normalize(&o, n);
-            cforms.push(o_norm);
+            congruent_shapes.push(o_norm);
         }
-        cforms
+        congruent_shapes
     }
 
-    pub fn free_polyocubes(n: usize) -> Vec<Vec<Vec<Vec<u32>>>> {
-        let ominoes = list_3d_ominoes(n);
-        let mut ominoes_all: HashSet<Vec<Vec<Vec<u32>>>> = HashSet::new();
-        let mut ominoes_nodup = Vec::new();
-        
-        for o in ominoes {
-            let norm_o = normalize(&o, n);
-            if !ominoes_all.contains(&norm_o) {
-                let cforms = congruent_forms(&norm_o);
-                for c in cforms {
-                    ominoes_all.insert(c);
+    fn conv2vec(cube: &Vec<Vec<Vec<bool>>>) -> Vec<usize> {
+        let mut v = Vec::new();
+        let n = cube.len();
+        'outer: for i in 0..n {
+            for j in 0..n {
+                for k in 0..n {
+                    if cube[i][j][k] {
+                        v.push(i*n*n + j*n + k);
+                        if v.len() == n {
+                            break 'outer
+                        }
+                    }
                 }
-                ominoes_nodup.push(norm_o);
             }
         }
-        ominoes_nodup
+        v
+    }
+
+    pub fn free_polyocubes_vec(n: usize) -> Vec<Vec<usize>> {
+        let candidates = generate_polyocube_candidates(n);
+        let mut polyocube_all: HashSet<Vec<usize>> = HashSet::new();
+        let mut polyocube_nodup = Vec::new();
+    
+        for cuboid in candidates {
+            let normalized_cube = normalize(&cuboid, n);
+            let shape_vec = conv2vec(&normalized_cube);
+            if !polyocube_all.contains(&shape_vec) {
+                for congruent_normalized_cube in generate_congruent_shapes(&normalized_cube) {
+                    let congruent_shape_vec = conv2vec(&congruent_normalized_cube);
+                    polyocube_all.insert(congruent_shape_vec);
+                }
+                polyocube_nodup.push(shape_vec);
+            }
+        }
+        polyocube_nodup
+    }
+
+    pub fn free_polyocubes(n: usize) -> Vec<Vec<Vec<Vec<bool>>>> {
+        let candidates = generate_polyocube_candidates(n);
+        let mut polyocube_all: HashSet<Vec<Vec<Vec<bool>>>> = HashSet::new();
+        let mut polyocube_nodup = Vec::new();
+
+        for cuboid in candidates {
+            let normalized_cube = normalize(&cuboid, n);
+            if !polyocube_all.contains(&normalized_cube) {
+                for cshape in generate_congruent_shapes(&normalized_cube) {
+                    polyocube_all.insert(cshape);
+                }
+                polyocube_nodup.push(normalized_cube);
+            }
+        }
+        polyocube_nodup
     }
 }
