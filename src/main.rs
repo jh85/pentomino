@@ -4,6 +4,7 @@ mod board;
 mod backtracking;
 mod solutionset;
 mod polyominolist;
+mod polycubelist;
 
 use std::time::Instant;
 use pieces::piece::*;
@@ -12,6 +13,7 @@ use board::board::*;
 use solutionset::solutionset::*;
 use backtracking::backtracking::solve_polyomino_bt;
 use polyominolist::polyominolist::*;
+use polycubelist::polycubelist::*;
 
 fn have_common_position(positions_a: &[usize], positions_b: &[usize]) -> bool {
     positions_b.iter().any(|pos| positions_a.contains(pos))
