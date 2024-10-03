@@ -1,4 +1,4 @@
-pub mod polyocubelist {
+pub mod polycubelist {
     use std::collections::HashSet;
 
     macro_rules! set_value_3d {
@@ -111,7 +111,7 @@ pub mod polyocubelist {
         }
     }
 
-    fn generate_polyocube_candidates(n: usize) -> Vec<Vec<Vec<Vec<bool>>>> {
+    fn generate_polycube_candidates(n: usize) -> Vec<Vec<Vec<Vec<bool>>>> {
         let size = 2 * n - 1;
         let mut visited = vec![vec![vec![false; size]; size]; n];
         let mut numbered = vec![vec![vec![None; size]; size]; n];
@@ -244,39 +244,39 @@ pub mod polyocubelist {
         v
     }
 
-    pub fn free_polyocubes_vec(n: usize) -> Vec<Vec<usize>> {
-        let candidates = generate_polyocube_candidates(n);
-        let mut polyocube_all: HashSet<Vec<usize>> = HashSet::new();
-        let mut polyocube_nodup = Vec::new();
+    pub fn free_polycubes_vec(n: usize) -> Vec<Vec<usize>> {
+        let candidates = generate_polycube_candidates(n);
+        let mut polycube_all: HashSet<Vec<usize>> = HashSet::new();
+        let mut polycube_nodup = Vec::new();
     
         for cuboid in candidates {
             let normalized_cube = normalize(&cuboid, n);
             let shape_vec = conv2vec(&normalized_cube);
-            if !polyocube_all.contains(&shape_vec) {
+            if !polycube_all.contains(&shape_vec) {
                 for congruent_normalized_cube in generate_congruent_shapes(&normalized_cube) {
                     let congruent_shape_vec = conv2vec(&congruent_normalized_cube);
-                    polyocube_all.insert(congruent_shape_vec);
+                    polycube_all.insert(congruent_shape_vec);
                 }
-                polyocube_nodup.push(shape_vec);
+                polycube_nodup.push(shape_vec);
             }
         }
-        polyocube_nodup
+        polycube_nodup
     }
 
-    pub fn free_polyocubes(n: usize) -> Vec<Vec<Vec<Vec<bool>>>> {
-        let candidates = generate_polyocube_candidates(n);
-        let mut polyocube_all: HashSet<Vec<Vec<Vec<bool>>>> = HashSet::new();
-        let mut polyocube_nodup = Vec::new();
+    pub fn free_polycubes(n: usize) -> Vec<Vec<Vec<Vec<bool>>>> {
+        let candidates = generate_polycube_candidates(n);
+        let mut polycube_all: HashSet<Vec<Vec<Vec<bool>>>> = HashSet::new();
+        let mut polycube_nodup = Vec::new();
 
         for cuboid in candidates {
             let normalized_cube = normalize(&cuboid, n);
-            if !polyocube_all.contains(&normalized_cube) {
+            if !polycube_all.contains(&normalized_cube) {
                 for cshape in generate_congruent_shapes(&normalized_cube) {
-                    polyocube_all.insert(cshape);
+                    polycube_all.insert(cshape);
                 }
-                polyocube_nodup.push(normalized_cube);
+                polycube_nodup.push(normalized_cube);
             }
         }
-        polyocube_nodup
+        polycube_nodup
     }
 }
