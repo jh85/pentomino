@@ -1,6 +1,7 @@
 pub mod board {
     use colored::Colorize;
-
+    use crate::solutionset::solutionset::Transformable;
+    
     #[derive(Clone,Eq,PartialEq,Hash)]
     pub struct Board(pub Vec<Vec<usize>>);
 
@@ -149,6 +150,27 @@ pub mod board {
                 }
                 println!();
             }
+        }
+    }
+
+    impl Transformable for Board {
+        fn get_all_transformations(&self) -> Vec<Self> {
+            let mut transformations = Vec::new();
+            let diagonal_opt = if self.is_square() {
+                vec![true, false]
+            } else {
+                vec![false]
+            };
+
+            for vertically in [true, false] {
+                for horizontally in [true, false] {
+                    for &diagonally in &diagonal_opt {
+                        transformations.push(self.transform(vertically, horizontally, diagonally));
+                    }
+                }
+            }
+
+            transformations
         }
     }
 }

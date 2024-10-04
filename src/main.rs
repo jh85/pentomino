@@ -5,6 +5,7 @@ mod backtracking;
 mod solutionset;
 mod polyominolist;
 mod polycubelist;
+mod cube;
 
 use std::time::Instant;
 use pieces::piece::*;
@@ -14,6 +15,7 @@ use solutionset::solutionset::*;
 use backtracking::backtracking::solve_polyomino_bt;
 use polyominolist::polyominolist::*;
 use polycubelist::polycubelist::*;
+use cube::cube::*;
 
 fn have_common_position(positions_a: &[usize], positions_b: &[usize]) -> bool {
     positions_b.iter().any(|pos| positions_a.contains(pos))
@@ -136,7 +138,133 @@ fn test_board(n: usize) -> Vec<Vec<usize>> {
     b
 }
 
+fn pieces2positions3d(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> (Vec<Vec<bool>>,Vec<usize>) {
+    let dim0 = cube.len();
+    let dim1 = cube[0].len();
+    let dim2 = cube[0][0].len();
+
+    let num_pieces: usize = 8;
+    let mut positions: Vec<Vec<usize>> = Vec::new();
+    let mut kinds: Vec<usize> = Vec::new();
+    let mut hole_positions = Vec::new();
+    for i in 0..dim0 {
+        for j in 0..dim1 {
+            for k in 0..dim2 {
+                if cube[i][j][k] == 1 {
+                    hole_positions.push(i*dim1*dim2 + j*dim2 + k);
+                }
+            }
+        }
+    }
+    for (kind,congruent_figures) in congruent_figures_for_each_piece_3d(n).iter().enumerate() {
+        for figure in congruent_figures {
+            let (figure_dim0,figure_dim1,figure_dim2) = figure.iter()
+                .fold((usize::MIN,usize::MIN,usize::MIN),
+                      |(max_i,max_j,max_k),&(i,j,k)| (max_i.max(i),max_j.max(j),max_k.max(k)));
+            for offset_i in 0..dim0.saturating_sub(figure_dim0) {
+                for offset_j in 0..dim1.saturating_sub(figure_dim1) {
+                    for offset_k in 0..dim2.saturating_sub(figure_dim2) {
+                        let mut figure_positions: Vec<_> = figure.into_iter()
+                            .map(|(i,j,k)| (i+offset_i)*dim1*dim2 + (j+offset_j)*dim2 + (k+offset_k))
+                            .collect();
+                        if have_common_position(&figure_positions, &hole_positions) {
+                            continue;
+                        } else {
+                            figure_positions.push(kind + dim0*dim1*dim2);
+                            positions.push(figure_positions);
+                            kinds.push(kind);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    hole_positions.push(dim0*dim1*dim2 + num_pieces);
+    positions.push(hole_positions);
+    kinds.push(num_pieces);
+
+    let length: usize = dim0*dim1*dim2 + num_pieces + 1;
+    let onehot_vectors: Vec<Vec<bool>> = positions.iter().map(|inner_vec| {
+        let mut bool_vec = vec![false; length];
+        inner_vec.iter().for_each(|&index| bool_vec[index] = true);
+        bool_vec
+    }).collect();
+    (onehot_vectors,kinds)
+}
+
+fn solution2cube(solution: &Vec<usize>,
+                 kinds: &Vec<usize>,
+                 positions: &Vec<Vec<bool>>,
+                 cube: &Vec<Vec<Vec<usize>>>) -> Cube {
+    let dim0 = cube.len();
+    let dim1 = cube[0].len();
+    let dim2 = cube[0][0].len();
+    let mut ret: Cube = Cube::new(dim0,dim1,dim2);
+    for &k in solution.iter() {
+        let kind_value = kinds[k];
+        let position_bit_pattern = &positions[k];
+
+        for i in 0..dim0 {
+            for j in 0..dim1 {
+                for k in 0..dim2 {
+                    if position_bit_pattern[i*dim1*dim2 + j*dim2 + k] {
+                        *ret.get_mut(i,j,k) = kind_value;
+                    }
+                }
+            }
+        }
+    }
+    ret
+}
+
+fn conv2num(v: Vec<bool>) -> Vec<usize> {
+    v.into_iter()
+        .map(|value| if value {1} else {0})
+        .collect()
+}
+
+fn solve_polycube_dlx(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> Vec<Cube> {
+    let num_pieces: usize = get_num_pieces_3d(n);
+    let (positions,kinds) = pieces2positions3d(&cube, n);
+    let num_cells = cube.len() * cube[0].len() * cube[0][0].len();
+    let mut m = Matrix::new(num_cells + num_pieces + 1);
+    for pos_1hvec in &positions {
+        m.add_row(&pos_1hvec);
+    }
+
+    let mut solutions = SolutionSet::new();
+    let num_solutions: usize = 0;
+    for solution in solve(m, num_solutions).iter() {
+        let solved_cube = solution2cube(&solution, &kinds, &positions, &cube);
+        solutions.add_solution(solved_cube);
+    }
+    solutions.get_solutions()
+}
+
 fn main() {
+    let cube_401 = vec![vec![vec![0;4];4];2];
+    let cube_402 = vec![vec![vec![0;8];2];2];
+    let cube_403 = vec![vec![vec![0,0,1,0,0],
+                             vec![0,0,1,0,0],
+                             vec![0,0,1,0,0],
+                             vec![0,0,1,0,0]],
+                        vec![vec![0,0,1,0,0],
+                             vec![0,0,1,0,0],
+                             vec![0,0,1,0,0],
+                             vec![0,0,1,0,0]]];
+    let solutions = solve_polycube_dlx(&cube_401,4);
+    println!("{}", &solutions.len());
+    let solutions = solve_polycube_dlx(&cube_402,4);
+    println!("{}", &solutions.len());
+    let solutions = solve_polycube_dlx(&cube_403,4);
+    println!("{}", &solutions.len());
+    for s in solutions {
+        println!("{:?}", &s);
+    }
+    
+    return;
+
+
     let b5 = test_board(5);
     let b6 = test_board(6);
     let b7 = test_board(7);

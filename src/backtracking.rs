@@ -66,7 +66,7 @@ pub mod backtracking {
             ret
         }
 
-        fn backtrack(&self, bitmap: Bitmap, partial_solution: &mut Solution, solutions: &mut SolutionSet) {
+        fn backtrack(&self, bitmap: Bitmap, partial_solution: &mut Solution, solutions: &mut SolutionSet<Board>) {
             if self.num_solutions > 0 && solutions.len() >= self.num_solutions {
                 return;
             }

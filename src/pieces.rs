@@ -15,6 +15,19 @@ pub mod piece {
         }
     }
 
+    pub fn get_num_pieces_3d(n: usize) -> usize {
+        match n {
+            4 => 8,
+            5 => 29,
+            6 => 166,
+            7 => 1023,
+            8 => 6922,
+            9 => 48311,
+            10 =>346543,
+            _ => panic!("wrong size"),
+        }
+    }
+    
     #[allow(dead_code)]
     fn pieces2vec<const N: usize, const K: usize>(pieces: [[[usize;N];N];K]) -> Vec<Vec<Vec<usize>>> {
         pieces.iter()
@@ -27,13 +40,6 @@ pub mod piece {
     }
 
     pub fn congruent_figures_for_each_piece(n: usize) -> Vec<Vec<Vec<(usize,usize)>>> {
-//        let all_pieces = match n {
-//            4 => pieces2vec(PIECES_4),
-//            5 => pieces2vec(PIECES_5),
-//            6 => pieces2vec(PIECES_6),
-//            _ => panic!("wrong n"),
-//        };
-
         let all_pieces = free_polyominos(n);
         
         let mut ret = Vec::new();

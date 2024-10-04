@@ -1,13 +1,18 @@
 pub mod solutionset {
     use std::collections::HashSet;
     use crate::board::board::*;
+    use crate::cube::cube::*;
+
+    pub trait Transformable: Clone + Eq + std::hash::Hash {
+        fn get_all_transformations(&self) -> Vec<Self>;
+    }
     
-    pub struct SolutionSet {
-        solutions: Vec<Board>,
-        congruent_solutions: HashSet<Board>,
+    pub struct SolutionSet<T: Transformable> {
+        solutions: Vec<T>,
+        congruent_solutions: HashSet<T>,
     }
 
-    impl SolutionSet {
+    impl<T: Transformable> SolutionSet<T> {
         pub fn new() -> Self {
             SolutionSet {
                 solutions: Vec::new(),
@@ -19,26 +24,16 @@ pub mod solutionset {
             self.solutions.len()
         }
 
-        pub fn add_solution(&mut self, board: Board) {
-            if !self.congruent_solutions.contains(&board) {
-                self.solutions.push(board.clone());
-                let diagonal_opt = if board.is_square() {
-                    vec![true,false]
-                } else {
-                    vec![false]
-                };
-                for vertically in [true,false] {
-                    for horizontally in [true,false] {
-                        for &diagonally in &diagonal_opt {
-                            let board = board.transform(vertically,horizontally,diagonally);
-                            self.congruent_solutions.insert(board.clone());
-                        }
-                    }
+        pub fn add_solution(&mut self, item: T) {
+            if !self.congruent_solutions.contains(&item) {
+                self.solutions.push(item.clone());
+                for transformation in item.get_all_transformations() {
+                    self.congruent_solutions.insert(transformation);
                 }
             }
         }
 
-        pub fn get_solutions(&self) -> Vec<Board> {
+        pub fn get_solutions(&self) -> Vec<T> {
             self.solutions.clone()
         }
     }
