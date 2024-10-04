@@ -1,7 +1,5 @@
 pub mod solutionset {
     use std::collections::HashSet;
-    use crate::board::board::*;
-    use crate::cube::cube::*;
 
     pub trait Transformable: Clone + Eq + std::hash::Hash {
         fn get_all_transformations(&self) -> Vec<Self>;
