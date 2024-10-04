@@ -114,7 +114,7 @@ fn pieces2positions3d(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> (Vec<Vec<bool>>,
     let dim1 = cube[0].len();
     let dim2 = cube[0][0].len();
 
-    let num_pieces: usize = 8;
+    let num_pieces: usize = get_num_pieces_3d(n);
     let mut positions: Vec<Vec<usize>> = Vec::new();
     let mut kinds: Vec<usize> = Vec::new();
     let mut hole_positions = Vec::new();
@@ -214,6 +214,13 @@ fn solve_polycube_dlx(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> Vec<Cube> {
 
 fn main() {
     let start = Instant::now();
+    let solutions = solve_polycube_dlx(&test_cube("404"), 5);
+    let duration = start.elapsed();
+    println!("DancingLinks: problem=B # of solutions={} elapsed time={:?}", solutions.len(), duration);
+
+    return;
+    
+    let start = Instant::now();
     let solutions = solve_polycube_dlx(&test_cube("401"), 4);
     let duration = start.elapsed();
     println!("DancingLinks: problem=CUBE_401 # of solutions={} elapsed time={:?}", solutions.len(), duration);
@@ -227,4 +234,5 @@ fn main() {
     let solutions = solve_polyomino_dlx(&test_board("401"), 4);
     let duration = start.elapsed();
     println!("DancingLinks: problem=BOARD_601 # of solutions={} elapsed time={:?}", solutions.len(), duration);
+
 }
