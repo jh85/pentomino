@@ -1,11 +1,15 @@
-# Polyomino Puzzle
+# Polyomino Puzzle Solver by Rust
 
 A polyomino puzzle solver was implemented. It runs fast for puzzles up to Pentominoes. While it is slow, it can still handle Hexominoes. However, for Heptominoes and larger, it is too slow to be practical. For Pentomino puzzles, the code outputs the total number of solutions for a given board. For Hexominoes and larger polyominoes, the solver stops and outputs as soon as it finds the first solution, as counting all solutions is impractical.
 
+# Polycube Puzzle Solver
+
+The polycube puzzle solver runs fast for Tetracube puzzles. Only dancing links version is implemented. Unfortunately, it is slow for pantacubes and larger.
+
 **How to use**: 
-1. In the main() function, create a board object as a Vec<Vec\<usize\>>. Use 1 to mark holes (places where pieces cannot be placed) and 0 for open spaces.
-2. To use the Dancing Links solver, call solve_polyomino_dlx(board, size). For the Backtracking solver, call solve_polyomino_bt(board, size).
-3. Both solve_polyomino_XXX functions return a Vec<Vec<Vec\<usize\>>>, which is a vector of boards. Each board represents a solution.
+1. Create a board object as a Vec<Vec\<usize\>> or a cube object as a Vec<Vec<Vec\<usize\>>>. A cube does not need to be a cube, but needs to be a rectangular cuboid. Use 1 to mark holes (places where pieces cannot be placed) and 0 for open spaces.
+2. To use the Dancing Links solver, call solve_polyomino_dlx(board, size). For the Backtracking solver, call solve_polyomino_bt(board, size). To solve polycube puzzle, call solve_polycube_dlx(cube, size).
+3. All the solve_polyXXXX_XXX functions return a Vec\<Board\> or Vec\<Cube\>. Each element represents a solution.
 
 **Backtracking**: According to [WikiPedia's Backtracking page](https://en.wikipedia.org/wiki/Backtracking) 
 > Backtracking is a class of algorithms for finding solutions to some computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons a candidate ("backtracks") as soon as it determines that the candidate cannot possibly be completed to a valid solution.
