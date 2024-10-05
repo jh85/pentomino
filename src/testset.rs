@@ -83,6 +83,9 @@ pub mod testset {
             "402" => array2vec_3d(CUBE_402),
             "403" => array2vec_3d(CUBE_403),
             "404" => array2vec_3d(CUBE_404),
+            "601" => array2vec_3d(CUBE_601),
+            "602" => array2vec_3d(CUBE_602),
+            "603" => array2vec_3d(CUBE_603),
             _     => panic!("Unknown name"),
         }
     }
