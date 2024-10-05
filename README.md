@@ -1,4 +1,4 @@
-# Polyomino Puzzle Solver by Rust
+# Polyomino Puzzle Solver
 
 A polyomino puzzle solver was implemented. It runs fast for puzzles up to Pentominoes. While it is slow, it can still handle Hexominoes. However, for Heptominoes and larger, it is too slow to be practical. For Pentomino puzzles, the code outputs the total number of solutions for a given board. For Hexominoes and larger polyominoes, the solver stops and outputs as soon as it finds the first solution, as counting all solutions is impractical.
 
