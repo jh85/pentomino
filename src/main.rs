@@ -22,7 +22,7 @@ fn have_common_position(positions_a: &[usize], positions_b: &[usize]) -> bool {
     positions_b.iter().any(|pos| positions_a.contains(pos))
 }
 
-fn pieces2positions(board: &Vec<Vec<usize>>, n: usize) -> (Vec<Vec<bool>>,Vec<usize>) {
+fn pieces2positions(board: &Vec<Vec<usize>>, n: usize) -> (Vec<Vec<usize>>,Vec<usize>) {
     let num_pieces: usize = get_num_pieces(n);
     let mut positions: Vec<Vec<usize>> = Vec::new();
     let mut kinds: Vec<usize> = Vec::new();
@@ -62,30 +62,23 @@ fn pieces2positions(board: &Vec<Vec<usize>>, n: usize) -> (Vec<Vec<bool>>,Vec<us
     positions.push(hole_positions);
     kinds.push(num_pieces);
 
-    let length: usize = board_h*board_w + num_pieces + 1;
-    let onehot_vectors: Vec<Vec<bool>> = positions.iter().map(|inner_vec| {
-        let mut bool_vec = vec![false; length];
-        inner_vec.iter().for_each(|&index| bool_vec[index] = true);
-        bool_vec
-    }).collect();
-    (onehot_vectors,kinds)
+    (positions,kinds)
 }
 
 fn solution2board(solution: &Vec<usize>,
                   kinds: &Vec<usize>,
-                  positions: &Vec<Vec<bool>>,
+                  positions: &Vec<Vec<usize>>,
                   board: &Vec<Vec<usize>>) -> Board {
     let mut ret: Board = Board::new(board.len(), board[0].len());
     for &k in solution.iter() {
         let kind_value = kinds[k];
-        let position_bit_pattern = &positions[k];
-
-        for i in 0..ret.height() {
-            for j in 0..ret.width() {
-                if position_bit_pattern[i*ret.width() + j] {
-                    *ret.get_mut(i,j) = kind_value;
-                }
+        for pos in &positions[k] {
+            if *pos >= ret.height()*ret.width() {
+                continue;
             }
+            let a = pos / ret.width();
+            let b = pos % ret.width();
+            *ret.get_mut(a,b) = kind_value;
         }
     }
     ret
@@ -109,7 +102,7 @@ fn solve_polyomino_dlx(board: &Vec<Vec<usize>>, n: usize) -> Vec<Board> {
     solutions.get_solutions()
 }
 
-fn pieces2positions3d(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> (Vec<Vec<bool>>,Vec<usize>) {
+fn pieces2positions3d(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> (Vec<Vec<usize>>,Vec<usize>) {
     let dim0 = cube.len();
     let dim1 = cube[0].len();
     let dim2 = cube[0][0].len();
@@ -154,18 +147,12 @@ fn pieces2positions3d(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> (Vec<Vec<bool>>,
     positions.push(hole_positions);
     kinds.push(num_pieces);
 
-    let length: usize = dim0*dim1*dim2 + num_pieces + 1;
-    let onehot_vectors: Vec<Vec<bool>> = positions.iter().map(|inner_vec| {
-        let mut bool_vec = vec![false; length];
-        inner_vec.iter().for_each(|&index| bool_vec[index] = true);
-        bool_vec
-    }).collect();
-    (onehot_vectors,kinds)
+    (positions,kinds)
 }
 
 fn solution2cube(solution: &Vec<usize>,
                  kinds: &Vec<usize>,
-                 positions: &Vec<Vec<bool>>,
+                 positions: &Vec<Vec<usize>>,
                  cube: &Vec<Vec<Vec<usize>>>) -> Cube {
     let dim0 = cube.len();
     let dim1 = cube[0].len();
@@ -173,25 +160,18 @@ fn solution2cube(solution: &Vec<usize>,
     let mut ret: Cube = Cube::new(dim0,dim1,dim2);
     for &k in solution.iter() {
         let kind_value = kinds[k];
-        let position_bit_pattern = &positions[k];
-
-        for i in 0..dim0 {
-            for j in 0..dim1 {
-                for k in 0..dim2 {
-                    if position_bit_pattern[i*dim1*dim2 + j*dim2 + k] {
-                        *ret.get_mut(i,j,k) = kind_value;
-                    }
-                }
+        for pos in &positions[k] {
+            if *pos >= dim0*dim1*dim2 {
+                continue;
             }
+            let a = pos / (dim1*dim2);
+            let remainder = pos % (dim1*dim2);
+            let b = remainder / dim2;
+            let c = remainder % dim2;
+            *ret.get_mut(a,b,c) = kind_value;
         }
     }
     ret
-}
-
-fn conv2num(v: Vec<bool>) -> Vec<usize> {
-    v.into_iter()
-        .map(|value| if value {1} else {0})
-        .collect()
 }
 
 fn solve_polycube_dlx(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> Vec<Cube> {
@@ -213,13 +193,6 @@ fn solve_polycube_dlx(cube: &Vec<Vec<Vec<usize>>>, n: usize) -> Vec<Cube> {
 }
 
 fn main() {
-    let start = Instant::now();
-    let solutions = solve_polycube_dlx(&test_cube("404"), 5);
-    let duration = start.elapsed();
-    println!("DancingLinks: problem=B # of solutions={} elapsed time={:?}", solutions.len(), duration);
-
-    return;
-    
     let start = Instant::now();
     let solutions = solve_polycube_dlx(&test_cube("401"), 4);
     let duration = start.elapsed();

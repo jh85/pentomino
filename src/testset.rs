@@ -15,7 +15,7 @@ pub mod testset {
             9 => 257, // 1285 = 5x257
             10 => 95, // 4655 = 49x95
             11 => 271, // 17073 = 63x271
-            _ => panic!("test_board: not supported number {}", n),
+            _ => panic!("simple_test_board: not supported number {}", n),
         };
         let width: usize = num_pieces / height;
         let mut b = vec![vec![0;n*width];n*height];

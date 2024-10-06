@@ -226,43 +226,6 @@ pub mod polycubelist {
         congruent_shapes
     }
 
-    fn conv2vec(cube: &Vec<Vec<Vec<bool>>>) -> Vec<usize> {
-        let mut v = Vec::new();
-        let n = cube.len();
-        'outer: for i in 0..n {
-            for j in 0..n {
-                for k in 0..n {
-                    if cube[i][j][k] {
-                        v.push(i*n*n + j*n + k);
-                        if v.len() == n {
-                            break 'outer
-                        }
-                    }
-                }
-            }
-        }
-        v
-    }
-
-    pub fn free_polycubes_vec(n: usize) -> Vec<Vec<usize>> {
-        let candidates = generate_polycube_candidates(n);
-        let mut polycube_all: HashSet<Vec<usize>> = HashSet::new();
-        let mut polycube_nodup = Vec::new();
-    
-        for cuboid in candidates {
-            let normalized_cube = normalize(&cuboid, n);
-            let shape_vec = conv2vec(&normalized_cube);
-            if !polycube_all.contains(&shape_vec) {
-                for congruent_normalized_cube in generate_congruent_shapes(&normalized_cube) {
-                    let congruent_shape_vec = conv2vec(&congruent_normalized_cube);
-                    polycube_all.insert(congruent_shape_vec);
-                }
-                polycube_nodup.push(shape_vec);
-            }
-        }
-        polycube_nodup
-    }
-
     pub fn free_polycubes(n: usize) -> Vec<Vec<Vec<Vec<bool>>>> {
         let candidates = generate_polycube_candidates(n);
         let mut polycube_all: HashSet<Vec<Vec<Vec<bool>>>> = HashSet::new();

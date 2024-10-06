@@ -170,14 +170,14 @@ pub mod dlx {
             self.x.insert(self.x.data[0].prev, new_col);
         }
 
-        pub fn add_row(&mut self, row: &[bool]) {
-            assert_eq!(row.len(), self.size.len() - 1);
+        pub fn add_row(&mut self, row: &[usize]) {
             let row_start = self.x.data.len();
             let mut c = 0;
             let mut prev = None;
-            for &is_filled in row {
+            let mut count: usize = 0;
+            for i in 0..self.size.len()-1 {
                 c = self.x.data[c].next;
-                if is_filled {
+                if row.contains(&i) {
                     self.size[c] += 1;
                     let new_cell = self.alloc(c);
                     self.y.insert(self.y.data[c].prev, new_cell);
@@ -185,6 +185,11 @@ pub mod dlx {
                         self.x.insert(prev, new_cell);
                     }
                     prev = Some(new_cell);
+
+                    count += 1;
+                    if count == row.len() {
+                        break;
+                    }
                 }
             }
             let row_end = self.x.data.len();
